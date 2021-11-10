@@ -21,7 +21,7 @@ let webpackConfig = {
     module: {
         rules: [
             { test: /\.ts$/, loader: 'ts-loader' },
-            { test: /\.css$/, loader: [ 'to-string-loader', 'css-loader' ] },
+            { test: /\.css$/, loader: 'css-loader' },
             { test: /\.scss$/,
                 use: [
                     'style-loader',
@@ -32,7 +32,6 @@ let webpackConfig = {
         ]
     },
     devServer: {
-        contentBase: false,
         compress: true,
         port: 3443,
         https: true
