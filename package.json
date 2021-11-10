@@ -22,6 +22,12 @@
     "webpack-dev-server": "^4.4.0"
   },
   "dependencies": {
-    "d3": "^7.1.1"
+    "anichart": "^2.4.4",
+    "buffer": "^6.0.3",
+    "d3": "^7.1.1",
+    "https-browserify": "^1.0.0",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "util": "^0.12.4"
   }
 }

@@ -13,7 +13,17 @@ let webpackConfig = {
         libraryTarget: 'umd'
     },
     resolve: {
-        extensions: ['.ts', '.js', '.scss', '.css']
+        extensions: ['.ts', '.js', '.scss', '.css'],
+        fallback: {
+            path: require.resolve("path-browserify"),
+            stream: false,
+            http: false,
+            https: false,
+            fs: false,
+            util: false,
+            zlib: false,
+            buffer: false,
+          },
     },
     plugins: [
         new UglifyJSPlugin()
