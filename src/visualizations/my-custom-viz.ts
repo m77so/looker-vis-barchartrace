@@ -13,11 +13,15 @@ const vis: WhateverNameYouWantVisualization = {
     id: 'some id', // id/label not required, but nice for testing and keeping manifests in sync
     label: 'Some Name',
     options: {
-        title: {
-            type: 'string',
-            label: 'Title',
-            display: 'text',
-            default: 'Default Text'
+        speed: {
+            type: 'number',
+            label: 'Speed',
+            display: 'range',
+            default: 10,
+            max: 30,
+            min: 1,
+            step: 1
+
         }
     },
     // Set up the initial state of the visualization
@@ -92,7 +96,7 @@ const vis: WhateverNameYouWantVisualization = {
             let stage = new anichart.Stage(canvas);
             element.appendChild(canvas)
             stage.options.fps = 30;
-            stage.options.sec = date_len * .5 + 4;
+            stage.options.sec = date_len * (10/config["speed"]) + 4;
             // Create a chart that loads data named "data" by default
             let chart = new anichart.BarChart();
             // Mount the chart
