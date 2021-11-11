@@ -26,6 +26,11 @@ const vis: WhateverNameYouWantVisualization = {
     },
     // Render in response to the data or settings changing
     update(data, element, config, queryResponse) {
+        const ctrler = document.getElementById("anichart-ctrl")
+        if(ctrler !== null){
+            ctrler.remove()
+        }
+        element.innerHTML = ""
         console.log( 'data', data );
         console.log( 'element', element );
         console.log( 'config', config );
@@ -55,11 +60,15 @@ const vis: WhateverNameYouWantVisualization = {
         }
         anichart.recourse.data.set("data", unpivotted_data)
         console.log(unpivotted_data)
+        
         if (errors) { // errors === true means no errors
-            element.innerHTML = 'Hello Looker!';
-            let stage = new anichart.Stage();
+            const canvas = document.createElement("canvas")
+            canvas.width = element.clientWidth
+            canvas.height = element.clientHeight
+            let stage = new anichart.Stage(canvas);
+            element.appendChild(canvas)
             stage.options.fps = 30;
-            stage.options.sec = 15;
+            stage.options.sec = 30;
             // Create a chart that loads data named "data" by default
             let chart = new anichart.BarChart();
             // Mount the chart
