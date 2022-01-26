@@ -4,7 +4,7 @@ const TerserPlugin = require("terser-webpack-plugin")
 let webpackConfig = {
     mode: 'production',
     entry: {
-        myCustomViz: './src/visualizations/my-custom-viz.ts'
+        "bar-chart-race": './src/visualizations/my-custom-viz.ts'
     },
     output: {
         filename: '[name].js',
