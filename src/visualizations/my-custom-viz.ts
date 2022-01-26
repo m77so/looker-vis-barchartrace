@@ -1,6 +1,5 @@
 import { Looker, VisualizationDefinition } from '../common/types';
 import { handleErrors } from '../common/utils';
-import './my-custom-viz.scss'
 import * as anichart from 'anichart';
 
 declare var looker: Looker;
@@ -49,15 +48,15 @@ const vis: WhateverNameYouWantVisualization = {
         });
         const unpivotted_data = []
         const values_len = Object.keys(data[0]).length
-        const date_key = Object.keys(data[0]).filter(s=>s.endsWith("date_date"))[0]
-        const value_key = Object.keys(data[0]).filter(s=>s!==date_key && !s.endsWith("date_date"))[0]
+        const date_key = Object.keys(data[0]).filter(s=>s.endsWith("_date"))[0]
+        const value_key = Object.keys(data[0]).filter(s=>s!==date_key && !s.endsWith("_date"))[0]
         let label_key = ""
         let image_url_key = ""
         if (values_len >= 3) {
-            label_key = Object.keys(data[0]).filter(s=>s!==date_key && !s.endsWith("date_date"))[1]
+            label_key = Object.keys(data[0]).filter(s=>s!==date_key && !s.endsWith("_date"))[1]
         }
         if (values_len >= 4) {
-            image_url_key = Object.keys(data[0]).filter(s=>s!==date_key && !s.endsWith("date_date"))[2]
+            image_url_key = Object.keys(data[0]).filter(s=>s!==date_key && !s.endsWith("_date"))[2]
         }
 
         const date_len = data.length
