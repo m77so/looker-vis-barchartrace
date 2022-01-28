@@ -1,10 +1,10 @@
 let path = require('path');
-
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin")
 
 let webpackConfig = {
+    mode: 'production',
     entry: {
-        myCustomViz: './src/visualizations/my-custom-viz.ts'
+        "bar-chart-race": './src/visualizations/my-custom-viz.ts'
     },
     output: {
         filename: '[name].js',
@@ -23,23 +23,24 @@ let webpackConfig = {
             util: false,
             zlib: false,
             buffer: false,
-          },
+        },
     },
-    plugins: [
-        new UglifyJSPlugin()
-    ],
     module: {
         rules: [
             { test: /\.ts$/, loader: 'ts-loader' },
-            { test: /\.css$/, loader: 'css-loader' },
-            { test: /\.scss$/,
-                use: [
-                    'style-loader',
-                    'css-loader',
-                    'sass-loader',
-                ]
-            }
         ]
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    compress: {
+                        drop_console: true, // console.log を出力しない
+                    },
+                },
+            }),
+        ],
     },
     devServer: {
         compress: true,
