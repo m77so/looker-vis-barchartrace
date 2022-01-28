@@ -61,6 +61,8 @@ const vis: WhateverNameYouWantVisualization = {
 
         const date_len = data.length
         const imagetags = {}
+        const unpivotted_data_dates = {}
+        let all_dates = []
         for(let line of data){
             const date = line[date_key]["value"]
             for(let elem_key in line[value_key]){
@@ -70,6 +72,9 @@ const vis: WhateverNameYouWantVisualization = {
                     unpivotted_data.push({
                         id, date, value
                     })
+                    if (! (id in unpivotted_data_dates)) unpivotted_data_dates[id] = []
+                    unpivotted_data_dates[id].push(date)
+                    all_dates.push(date)
                 }
                 if (image_url_key !== "" && line[image_url_key][elem_key]["value"] !== null)
                 {
@@ -77,6 +82,22 @@ const vis: WhateverNameYouWantVisualization = {
                 }
             }
         }
+
+        // fill 0
+        all_dates = Array.from(new Set(all_dates)).sort();
+        for(let k of Object.keys(unpivotted_data_dates)){
+            let k_dates = unpivotted_data_dates[k].sort()
+            let k_dates_min_idx = all_dates.indexOf(k_dates[0])
+            let k_dates_max_idx = all_dates.indexOf(k_dates[k_dates.length - 1])
+            for(let k_dates_idx = k_dates_min_idx + 1; k_dates_idx < k_dates_max_idx - 1; k_dates_idx++) {
+                if (!(k_dates.includes(all_dates[k_dates_idx]))) {
+                    unpivotted_data.push({
+                        id: k, date: all_dates[k_dates_idx], value: 0
+                    })
+                }
+            }
+        }
+
         anichart.recourse.data.set("data", unpivotted_data)
         console.log(imagetags)
         for (let imagetag_key in imagetags){
