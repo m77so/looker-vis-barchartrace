@@ -13,6 +13,7 @@ const vis: WhateverNameYouWantVisualization = {
     label: 'Some Name',
     options: {
         speed: {
+            section: 'Style',
             type: 'number',
             label: 'Speed',
             display: 'range',
@@ -21,6 +22,11 @@ const vis: WhateverNameYouWantVisualization = {
             min: 1,
             step: 1
 
+        },
+        cumsum: {
+            section: 'Calc',
+            type: 'boolean',
+            label: 'Cumulative Sum'
         }
     },
     // Set up the initial state of the visualization
@@ -33,6 +39,7 @@ const vis: WhateverNameYouWantVisualization = {
         if(ctrler !== null){
             ctrler.remove()
         }
+
         element.innerHTML = ""
         console.log( 'data', data );
         console.log( 'element', element );
@@ -61,7 +68,7 @@ const vis: WhateverNameYouWantVisualization = {
 
         const date_len = data.length
         const imagetags = {}
-        const unpivotted_data_dates = {}
+        const key_date_datas = {}
         let all_dates = []
         for(let line of data){
             const date = line[date_key]["value"]
@@ -69,11 +76,10 @@ const vis: WhateverNameYouWantVisualization = {
                 const id = label_key===""?elem_key:line[label_key][elem_key]["value"]
                 const value = line[value_key][elem_key]["value"]
                 if (value !== null){
-                    unpivotted_data.push({
+                    if (! (id in key_date_datas)) key_date_datas[id] = []
+                    key_date_datas[id].push({
                         id, date, value
                     })
-                    if (! (id in unpivotted_data_dates)) unpivotted_data_dates[id] = []
-                    unpivotted_data_dates[id].push(date)
                     all_dates.push(date)
                 }
                 if (image_url_key !== "" && line[image_url_key][elem_key]["value"] !== null)
@@ -85,16 +91,36 @@ const vis: WhateverNameYouWantVisualization = {
 
         // fill 0
         all_dates = Array.from(new Set(all_dates)).sort();
-        for(let k of Object.keys(unpivotted_data_dates)){
-            let k_dates = unpivotted_data_dates[k].sort()
+        for(let k of Object.keys(key_date_datas)){
+            let k_dates = key_date_datas[k].map(v=>v["date"]).sort()
             let k_dates_min_idx = all_dates.indexOf(k_dates[0])
             let k_dates_max_idx = all_dates.indexOf(k_dates[k_dates.length - 1])
             for(let k_dates_idx = k_dates_min_idx + 1; k_dates_idx < k_dates_max_idx - 1; k_dates_idx++) {
                 if (!(k_dates.includes(all_dates[k_dates_idx]))) {
-                    unpivotted_data.push({
+                    key_date_datas[k].push({
                         id: k, date: all_dates[k_dates_idx], value: 0
                     })
                 }
+            }
+        }
+
+        // cumsum
+        if (config["cumsum"] === true) {
+            for (let k of Object.keys(key_date_datas)){
+                let cumsum = 0
+                for (let o of key_date_datas[k].sort((a,b)=>a["date"]<b["date"]?-1:a["date"]>b["date"]?1:0)) {
+                    cumsum += o["value"]
+                    o["cumsum"] =cumsum
+                }
+            }
+        }
+
+        for(let k of Object.keys(key_date_datas)){
+            for (let o of key_date_datas[k]) {
+                let value = config["cumsum"] ? o["cumsum"] : o["value"]
+                unpivotted_data.push({
+                    id: o["id"], date: o["date"], value
+                })
             }
         }
 
